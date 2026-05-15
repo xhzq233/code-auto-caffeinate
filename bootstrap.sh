@@ -30,13 +30,14 @@ write_hook_script() {
 if pgrep -f "caffeinate.*-w ${PPID}" > /dev/null 2>&1; then
     exit 0
 fi
+# Fully detach so the hook runner is not blocked.
 # -d  prevent display sleep
 # -i  prevent system idle sleep
 # -m  prevent disk idle sleep
 # -s  prevent system sleep (AC power only)
 # -u  declare user active (keeps display on, prevents idle sleep)
 # -w  exit when PID exits
-caffeinate -dimsu -w "${PPID}" &
+(caffeinate -dimsu -w "${PPID}" </dev/null >/dev/null 2>&1 &)
 HOOK
     chmod +x "${HOOK_SCRIPT}"
 }
@@ -102,21 +103,21 @@ do_install() {
 
     echo ""
     echo "[2/2] Codex CLI"
-    # Enable hooks feature flag
+    # Enable hooks feature flag (use [features].hooks, NOT deprecated codex_hooks)
     local cfg="${HOME}/.codex/config.toml"
     mkdir -p "$(dirname "$cfg")"
     if [ -f "$cfg" ]; then
-        if grep -q "^codex_hooks" "$cfg"; then
-            sed -i '' 's/^codex_hooks.*/codex_hooks = true/' "$cfg"
+        if grep -q "^hooks *=" "$cfg"; then
+            : # already set
         elif grep -q '^\[features\]' "$cfg"; then
             sed -i '' '/^\[features\]/a\
-codex_hooks = true
+hooks = true
 ' "$cfg"
         else
-            printf '\n[features]\ncodex_hooks = true\n' >> "$cfg"
+            printf '\n[features]\nhooks = true\n' >> "$cfg"
         fi
     else
-        printf '[features]\ncodex_hooks = true\n' > "$cfg"
+        printf '[features]\nhooks = true\n' > "$cfg"
     fi
     echo "  Written to ${cfg}"
     json_session_start "${HOME}/.codex/hooks.json" add
