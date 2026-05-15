@@ -3,8 +3,8 @@ set -euo pipefail
 #
 # code-auto-caffeinate — auto-prevent macOS sleep during Claude Code / Codex sessions.
 #
-# Install:   curl -sL https://raw.githubusercontent.com/USER/code-auto-caffeinate/main/bootstrap.sh | bash
-# Uninstall: curl -sL https://raw.githubusercontent.com/USER/code-auto-caffeinate/main/bootstrap.sh | bash -s -- -u
+# Install:   curl -sL https://raw.githubusercontent.com/xhzq233/code-auto-caffeinate/main/bootstrap.sh | bash
+# Uninstall: curl -sL https://raw.githubusercontent.com/xhzq233/code-auto-caffeinate/main/bootstrap.sh | bash -s -- -u
 #
 
 INSTALL_DIR="${HOME}/.code-auto-caffeinate"
